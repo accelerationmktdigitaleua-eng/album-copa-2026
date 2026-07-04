@@ -8,12 +8,15 @@ App web pra controlar o álbum de figurinhas Panini da Copa do Mundo FIFA 2026.
 
 - 994 figurinhas: 48 seleções × 20 + 20 FWC (foil) + 14 Coca-Cola
 - Toque na figurinha: falta → tenho → repetida (pra troca)
-- Progresso por seleção, grupo e geral, com estatísticas
+- Fotos dos jogadores (Wikimedia Commons): P&B quando falta, colorida quando cola
+- 🎆 Fogos de artifício ao completar uma seleção/seção
+- Progresso por seleção, grupo e geral + relatório "o que falta" clicável
 - Busca por jogador/seleção (ignora acentos)
 - Lista de faltantes e lista de troca compartilháveis (WhatsApp)
 - Backup: exportar/importar JSON (dados ficam no localStorage do navegador)
+- 100% offline após a primeira visita (service worker; botão pra baixar todas as fotos)
 - PWA: adicionar à tela de início no iPhone/iPad
-- Otimizado pra iOS, iPad e Chrome desktop
+- Visual estádio noturno + foil Panini, cores dos 3 países-sede, otimizado iOS/iPad/Chrome
 
 ## Stack
 
