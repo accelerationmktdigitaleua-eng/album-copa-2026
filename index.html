@@ -255,6 +255,32 @@ button{cursor:pointer}
 /* Time completo ganha troféu */
 .team-card.done .tc-name::after{content:' 🏆'}
 
+/* Pacotinho 🎁 */
+#pack-btn{display:block;margin:0 16px 12px;width:calc(100% - 32px);padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,#166534,#15803d);color:#fff;font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:.03em;box-shadow:0 4px 18px rgba(74,222,128,.25);transition:transform .1s}
+#pack-btn:active{transform:scale(.97)}
+.pack-flags{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}
+.pack-flag-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.pack-flag-btn:active{background:var(--surface2)}
+.pack-flag-btn .pf{font-size:26px;line-height:1}
+.pack-flag-btn .pc{font-size:10px;font-weight:800;color:var(--muted)}
+.pack-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}
+.pack-num{min-height:58px;border-radius:14px;border:1.5px dashed var(--border2);background:var(--surface);color:var(--text);font-family:var(--disp);font-weight:700;font-size:22px;display:flex;align-items:center;justify-content:center;transition:transform .08s}
+.pack-num:active{transform:scale(.92)}
+.pack-num.have{border-style:solid;border-color:var(--green);background:var(--green-tint);color:var(--green)}
+.pack-num.rep{border-style:solid;border-color:var(--orange);background:var(--orange-tint);color:var(--orange)}
+.pack-feedback{margin:10px 12px 0;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:10px;min-height:58px;animation:rise .25s ease}
+.pack-feedback img{width:38px;height:38px;border-radius:50%;object-fit:cover;object-position:top;flex-shrink:0}
+.pack-switch{display:block;margin:4px 12px 20px;width:calc(100% - 24px);padding:11px;border-radius:99px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:11px;font-weight:700}
+
+/* Nudge "falta pouco" na home */
+.nudge{margin:0 16px 12px;background:linear-gradient(135deg,#2b2110,var(--surface));border:1px solid rgba(251,191,36,.35);border-radius:14px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;width:calc(100% - 32px);text-align:left}
+.nudge-txt{flex:1;font-size:12px;font-weight:600;color:var(--text2)}
+.nudge-txt b{color:var(--gold)}
+
+/* Toast desfazer */
+#undo-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,8px) + 78px);transform:translateX(-50%);background:#1c2a20;border:1px solid var(--border2);border-radius:99px;padding:9px 8px 9px 16px;display:flex;align-items:center;gap:10px;z-index:500;box-shadow:0 6px 24px rgba(0,0,0,.5);font-size:12px;color:var(--text2);max-width:92vw;white-space:nowrap;animation:rise .2s ease}
+#undo-toast button{background:var(--green-tint);color:var(--green);border:1px solid rgba(74,222,128,.4);border-radius:99px;padding:6px 14px;font-size:11px;font-weight:800}
+
 /* Ferramentas (stats) */
 .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tool-btn{padding:12px 10px;border-radius:14px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:11px;font-weight:700;transition:border-color .15s,color .15s}
@@ -332,7 +358,9 @@ button{cursor:pointer}
     <div class="stat-box"><div id="sb-m" class="stat-v" style="color:#f87171">994</div><div class="stat-l">Faltando</div></div>
     <div class="stat-box"><div id="sb-r" class="stat-v" style="color:#fb923c">0</div><div class="stat-l">Repetidas</div></div>
   </div>
-  <div style="height:10px"></div>
+  <button id="pack-btn" onclick="goPack()">🎁 Abri um pacotinho!</button>
+  <div id="home-nudge"></div>
+  <div style="height:4px"></div>
   <button class="gp-row" onclick="goFwcI()" style="width:100%;text-align:left">
     <div class="gp-letter" id="fwci-badge" style="font-size:12px;letter-spacing:0;width:38px">FWC</div>
     <div class="gp-right">
@@ -486,6 +514,21 @@ button{cursor:pointer}
   </div>
 </div>
 
+<!-- TELA: PACOTINHO -->
+<div class="screen" id="s-pack">
+  <div class="team-hdr">
+    <button class="back-btn" onclick="goBack()">&#8592; Voltar</button>
+    <div class="team-hdr-inner">
+      <div class="th-flag" id="pack-flag">🎁</div>
+      <div class="th-info">
+        <div class="th-name" id="pack-title">Abri um pacotinho!</div>
+        <div class="th-sub" id="pack-sub">Toca na seleção escrita na figurinha</div>
+      </div>
+    </div>
+  </div>
+  <div id="pack-body"></div>
+</div>
+
 <!-- NAVEGAÇÃO -->
 <div id="nav">
   <button class="nav-item on" onclick="goTo('home',this)">
@@ -584,8 +627,8 @@ var TEAMS = {
     'Ronwen Williams','Sipho Chaine','Aubrey Modiba','Samukele Kabini',
     'Mbekezeli Mbokazi','Khulumani Ndamane','Siyabonga Ngezana','Khuliso Mudau',
     'Nkosinathi Sibisi','Teboho Mokoena','Thalente Mbatha',
-    'Bathuisi Aubaas','Yaya Sithole','Sipho Mbule','Lyle Foster',
-    'Ioraam Rayners','Mohau Nkota','Oswin Appolis']},
+    'Bathusi Aubaas','Yaya Sithole','Sipho Mbule','Lyle Foster',
+    'Iqraam Rayners','Mohau Nkota','Oswin Appollis']},
 
   KOR: {n:'Coreia do Sul',   f:'🇰🇷', g:'A', p:[
     'Hyeon-woo Jo','Seung-Gyu Kim','Min-jae Kim','Yu-min Cho',
@@ -671,8 +714,8 @@ var TEAMS = {
     'Roberto Fernández','Orlando Gill','Gustavo Gómez','Fabián Balbuena',
     'Juan José Cáceres','Omar Alderete','Junior Alonso','Mathías Villasanti',
     'Diego Gómez','Damián Bobadilla','Andrés Cubas',
-    'Matías Galarza','Julio Enciso','Alexis Duarte','Ángel Cardozo',
-    'Ramón Sosa','Santiago Arzamendia','Rodrigo Rojas']},
+    'Matías Galarza Fonda','Julio Enciso','Alejandro Romero Gamarra','Miguel Almirón',
+    'Ramón Sosa','Ángel Romero','Antonio Sanabria']},
 
   AUS: {n:'Austrália',       f:'🇦🇺', g:'D', p:[
     'Mathew Ryan','Joe Gauci','Harry Souttar','Alessandro Circati',
@@ -714,7 +757,7 @@ var TEAMS = {
     'Hernán Galíndez','Gonzalo Valle','Piero Hincapié','Pervis Estupiñán',
     'Willian Pacho','Ángelo Preciado','Joel Ordóñez','Moisés Caicedo',
     'Alan Franco','Kendry Páez','Pedro Vite',
-    'John Veboah','Leonardo Campana','Gonzalo Plata','Nilson Angulo',
+    'John Yeboah','Leonardo Campana','Gonzalo Plata','Nilson Angulo',
     'Alan Minda','Kevin Rodríguez','Enner Valencia']},
 
   // ── GRUPO F ───────────────────────────────────────
@@ -740,7 +783,7 @@ var TEAMS = {
     'Anthony Elanga','Alexander Isak','Viktor Gyökeres']},
 
   TUN: {n:'Tunísia',         f:'🇹🇳', g:'F', p:[
-    'Bechir Ben Said','Aymen Dahmen','Van Valery','Montassar Talbi',
+    'Bechir Ben Said','Aymen Dahmen','Yan Valery','Montassar Talbi',
     'Yassine Meriah','Ali Abdi','Dylan Bronn','Ellyes Skhiri',
     'Aissa Laidouni','Ferjani Sassi','Mohamed Ali Ben Romdhane',
     'Hannibal Mejbri','Elias Achouri','Elias Saad','Hazem Mastouri',
@@ -763,13 +806,13 @@ var TEAMS = {
 
   IRN: {n:'Irã',             f:'🇮🇷', g:'G', p:[
     'Alireza Beiranvand','Morteza Pouraliganji','Ehsan Hajsafi','Milad Mohammadi',
-    'Shoja Khalilzadeh','Ramin Rezaeian','Hossein Kanaani','Sadegh Moharrami',
+    'Shojae Khalilzadeh','Ramin Rezaeian','Hossein Kanaani','Sadegh Moharrami',
     'Saleh Hardani','Saeed Ezatolahi','Saman Ghoddos',
     'Omid Noorafkan','Roozbeh Cheshmi','Mohammad Mohebi','Sardar Azmoun',
     'Mehdi Taremi','Alireza Jahanbakhsh','Ali Gholizadeh']},
 
   NZL: {n:'Nova Zelândia',   f:'🇳🇿', g:'G', p:[
-    'Max Crocombe-Payne','Alex Paulsen','Michael Boxall','Liberato Cacace',
+    'Max Crocombe Payne','Alex Paulsen','Michael Boxall','Liberato Cacace',
     'Tim Payne','Tyler Bindon','Francis de Vries','Finn Surman',
     'Joe Bell','Sarpreet Singh','Ryan Thomas',
     'Matthew Garbett','Marko Stamenić','Ben Old','Chris Wood',
@@ -791,7 +834,7 @@ var TEAMS = {
     'Dailon Livramento','Willy Semedo','Bebé']},
 
   KSA: {n:'Arábia Saudita',  f:'🇸🇦', g:'H', p:[
-    'Nawaf Alaqidi','Abdulrahman Al-Sanbi','Saud Abdulhamid','Nawaf Boushal',
+    'Nawaf Alaqidi','Abdulrahman Al-Sanbi','Saud Abdulhamid','Nawaf Bouwashl',
     'Jihad Thakri','Moteb Al-Harbi','Hassan Altambakti','Musab Aljuwayr',
     'Ziyad Aljohani','Abdullah Alkhaibari','Nasser Aldawsari',
     'Saleh Abu Alshamat','Marwan Alsahafi','Salem Aldawsari','Abdulrahman Al-Aboud',
@@ -813,7 +856,7 @@ var TEAMS = {
     'Kingsley Coman','Hugo Ekitike','Kylian Mbappé']},
 
   SEN: {n:'Senegal',         f:'🇸🇳', g:'I', p:[
-    'Eduardo Mendy','Yehvann Diouf','Moussa Niakhaté','Abdoulaye Seck',
+    'Édouard Mendy','Yehvann Diouf','Moussa Niakhaté','Abdoulaye Seck',
     'Ismail Jakobs','El Hadji Malick Diouf','Kalidou Koulibaly','Idrissa Gana Gueye',
     'Pape Matar Sarr','Pape Gueye','Habib Diarra',
     'Lamine Camara','Sadio Mané','Ismaïla Sarr','Boulaye Dia',
@@ -874,7 +917,7 @@ var TEAMS = {
     'Lionel Mpasi','Aaron Wan-Bissaka','Axel Tuanzebe','Arthur Masuaku',
     'Chancel Mbemba','Joris Kayembe','Charles Pickel','Ngal\'ayel Mukau',
     'Edo Kayembe','Samuel Moutoussamy','Noah Sadiki',
-    'Théo Bongonda','Meschack Elia','Yoane Wissa','Brian Cipenga',
+    'Théo Bongonda','Meschak Elia','Yoane Wissa','Brian Cipenga',
     'Fiston Mayele','Cédric Bakambu','Nathanaël Mbuku']},
 
   UZB: {n:'Uzbequistão',     f:'🇺🇿', g:'K', p:[
@@ -903,14 +946,14 @@ var TEAMS = {
     'Dominik Livaković','Duje Ćaleta-Car','Joško Gvardiol','Josip Stanišić',
     'Luka Vušković','Josip Šutalo','Kristijan Jakić','Luka Modrić',
     'Mateo Kovačić','Martin Baturina','Lovro Majer',
-    'Mario Pašalić','Petar Sučić','Ivan Perišić','Ante Budimir',
-    'Andrej Kramarić','Franjo Ivanović','Marco Pašalić']},
+    'Mario Pašalić','Petar Sučić','Ivan Perišić','Marco Pašalić',
+    'Ante Budimir','Andrej Kramarić','Franjo Ivanović']},
 
   GHA: {n:'Gana',            f:'🇬🇭', g:'L', p:[
     'Lawrence Ati Zigi','Tariq Lamptey','Mohammed Salisu','Alidu Seidu',
-    'Alexander Djiku','Gideon Mensah','Caleb Yirenkyi','Abdul Fatawu Issahaku',
+    'Alexander Djiku','Gideon Mensah','Caleb Yirenkyi','Abdul Issahaku Fatawu',
     'Thomas Partey','Salis Abdul Samed','Kamaldeen Sulemana',
-    'Mohammed Kudus','Iñaki Williams','Jordan Ayew','André Ayew',
+    'Mohammed Kudus','Iñaki Williams','Jordan Ayew','Andrew Ayew',
     'Joseph Paintsil','Osman Bukari','Antoine Semenyo']},
 
   PAN: {n:'Panamá',          f:'🇵🇦', g:'L', p:[
@@ -954,7 +997,7 @@ fetch('players.json').then(function(r){ return r.json(); }).then(function(m){
 function stkIconHtml(id, st) {
   var ico = st === 'have' ? '✓' : st === 'rep' ? '2+' : '?';
   var img = PLAYER_IMGS[id];
-  if (img) return '<div class="stk-photo"><img src="' + img + '" loading="lazy" alt=""/>'
+  if (img) return '<div class="stk-photo"><img src="' + img + '" loading="lazy" decoding="async" alt=""/>'
     + (st !== 'missing' ? '<span class="stk-badge ' + st + '">' + ico + '</span>' : '') + '</div>';
   return '<div class="stk-circle">' + ico + '</div>';
 }
@@ -1134,9 +1177,11 @@ function renderCc() {
 }
 function tapCc(id) {
   var beforeC = CC_STICKERS.filter(function(f){ return isOwned(f.id); }).length;
+  var prev = getStatus(id);
   lastTap = { id: id, t: Date.now() };
   toggle(id);
   renderCc();
+  showUndo(id, prev);
   var have = CC_STICKERS.filter(function(f){ return isOwned(f.id); }).length;
   if (beforeC < CC_STICKERS.length && have === CC_STICKERS.length) _celebrate('🥤 COCA-COLA COMPLETA! 🎉');
   var cp = Math.round(have/CC_STICKERS.length*100);
@@ -1160,6 +1205,18 @@ function renderHome() {
   document.getElementById('sb-h').textContent = c.have;
   document.getElementById('sb-m').textContent = c.miss;
   document.getElementById('sb-r').textContent = c.rep;
+
+  // Nudge: falta pouco!
+  var best = null;
+  CODES.forEach(function(code){
+    var done = countTeam(code), m2 = 20 - done;
+    if (m2 > 0 && done > 0 && (!best || m2 < best.miss))
+      best = { miss: m2, lbl: TEAMS[code].f + ' <b>' + TEAMS[code].n + '</b>', fn: "openTeam('" + code + "')" };
+  });
+  var nd = document.getElementById('home-nudge');
+  if (nd) nd.innerHTML = best
+    ? '<button class="nudge" onclick="' + best.fn + '"><span style="font-size:20px">🎯</span><span class="nudge-txt">Falta' + (best.miss > 1 ? 'm' : '') + ' só <b>' + best.miss + '</b> pro ' + best.lbl + ' completar!</span><span style="color:#fbbf24;font-size:16px">›</span></button>'
+    : '';
 
   // Groups
   var html = '';
@@ -1287,9 +1344,11 @@ function renderStickers(code) {
 
 function tapStk(id) {
   var before = countTeam(curTeam);
+  var prev = getStatus(id);
   lastTap = { id: id, t: Date.now() };
   toggle(id);
   renderStickers(curTeam);
+  showUndo(id, prev);
   if (before < 20 && countTeam(curTeam) === 20)
     _celebrate(TEAMS[curTeam].f + '<br>' + TEAMS[curTeam].n.toUpperCase() + ' COMPLETA! 🎉');
 }
@@ -1369,10 +1428,12 @@ function _fwcOwned() {
 function tapFwc(id) {
   var cfg = FWC_CATS[curFwcMode];
   var before = _fwcOwned();
+  var prev = getStatus(id);
   lastTap = { id: id, t: Date.now() };
   toggle(id);
   renderFwc();
   _refreshFwcHomeRow(curFwcMode);
+  showUndo(id, prev);
   if (before < cfg.total && _fwcOwned() === cfg.total) _celebrate('⭐ ' + cfg.label.toUpperCase() + '<br>COMPLETA! 🎉');
 }
 
@@ -1526,7 +1587,7 @@ function doSearch(q) {
     var fn  = r.type==='fwc'?'tapFwcSearch':r.type==='cc'?'tapCcSearch':'tapPlayerSearch';
     html += '<div class="sr-item '+(r.st!=='missing'?r.st:'')+'" onclick="'+fn+'(\''+r.id+'\')" id="sri-'+r.id+'">'
       + (PLAYER_IMGS[r.id]
-          ? '<div class="sr-ico '+r.st+'"><img src="'+PLAYER_IMGS[r.id]+'" loading="lazy" alt=""/></div>'
+          ? '<div class="sr-ico '+r.st+'"><img src="'+PLAYER_IMGS[r.id]+'" loading="lazy" decoding="async" alt=""/></div>'
           : '<div class="sr-ico '+r.st+'">'+ico+'</div>')
       + '<div style="flex:1;min-width:0"><div class="sr-lbl">'+r.lbl+'</div><div class="sr-sub">'+r.sub+'</div></div>'
       + '<div class="sr-status" style="color:'+stC+'">'+stL+'</div>'
@@ -1535,21 +1596,16 @@ function doSearch(q) {
   el.innerHTML = '<div class="sr-wrap">'+html+'</div>';
 }
 
-function tapPlayerSearch(id) {
+function _tapSearch(id) {
+  var prev = getStatus(id);
   toggle(id);
   doSearch(document.getElementById('sinp').value);
   renderHome();
+  showUndo(id, prev);
 }
-function tapFwcSearch(id) {
-  toggle(id);
-  doSearch(document.getElementById('sinp').value);
-  renderHome();
-}
-function tapCcSearch(id) {
-  toggle(id);
-  doSearch(document.getElementById('sinp').value);
-  renderHome();
-}
+function tapPlayerSearch(id) { _tapSearch(id); }
+function tapFwcSearch(id) { _tapSearch(id); }
+function tapCcSearch(id) { _tapSearch(id); }
 
 // ── STATS ─────────────────────────────────────────────
 function renderStats() {
@@ -1566,6 +1622,7 @@ function renderStats() {
   html += '<div class="stat-hero">'
     + '<div class="sh-pct">'+p+'%</div>'
     + '<div class="sh-sub">'+c.have+' de 994 figurinhas coletadas</div>'
+    + (c.miss ? '<div style="position:relative;font-size:11px;color:#8fa396;margin-top:5px">🎁 no mínimo '+Math.ceil(c.miss/7)+' pacotinhos pra fechar o álbum</div>' : '')
     + '<div style="margin-top:12px">'+barHtml(p, 8, '#4ade80')+'</div>'
   + '</div>';
 
@@ -1645,6 +1702,95 @@ function renderStats() {
   html += '</div>';
 
   document.getElementById('stats-body').innerHTML = html;
+}
+
+// ── PACOTINHO 🎁 ──────────────────────────────────────
+var packTeam = null;
+function goPack() {
+  packTeam = null;
+  var el = document.getElementById('s-pack');
+  var active = document.querySelector('.screen.on');
+  navStack.push(active ? active.id.replace('s-','') : 'home');
+  renderPack();
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('on'); });
+  el.classList.add('on');
+  window.scrollTo(0, 0);
+}
+function packPick(code) { packTeam = code; renderPack(); window.scrollTo(0, 0); }
+function renderPack(feedbackHtml) {
+  var body = document.getElementById('pack-body');
+  if (!packTeam) {
+    document.getElementById('pack-flag').textContent = '🎁';
+    document.getElementById('pack-title').textContent = 'Abri um pacotinho!';
+    document.getElementById('pack-sub').textContent = 'Toca na seleção escrita na figurinha';
+    var html = '<div class="pack-flags">';
+    CODES.forEach(function(c){
+      html += '<button class="pack-flag-btn" onclick="packPick(\''+c+'\')"><span class="pf">'+TEAMS[c].f+'</span><span class="pc">'+c+'</span></button>';
+    });
+    html += '<button class="pack-flag-btn" onclick="goFwcI()"><span class="pf">⭐</span><span class="pc">FWC</span></button>';
+    html += '<button class="pack-flag-btn" onclick="goCc()"><span class="pf">🥤</span><span class="pc">CC</span></button>';
+    html += '</div>';
+    body.innerHTML = html;
+    return;
+  }
+  var t = TEAMS[packTeam];
+  document.getElementById('pack-flag').textContent = t.f;
+  document.getElementById('pack-title').textContent = t.n;
+  document.getElementById('pack-sub').textContent = 'Toca no número da figurinha · ' + countTeam(packTeam) + '/20';
+  var html = feedbackHtml ? '<div class="pack-feedback">' + feedbackHtml + '</div>' : '';
+  html += '<div class="pack-nums">';
+  for (var n = 1; n <= 20; n++) {
+    var id = packTeam + '-' + n;
+    html += '<button class="pack-num ' + getStatus(id) + '" onclick="packTap(\'' + id + '\')">' + n + '</button>';
+  }
+  html += '</div>';
+  html += '<button class="pack-switch" onclick="packPick(null)">🔁 Trocar de seleção</button>';
+  body.innerHTML = html;
+}
+function packTap(id) {
+  var before = countTeam(packTeam);
+  var cur = getStatus(id);
+  var next = cur === 'missing' ? 'have' : 'rep'; // no pacote: nova = colada; já tinha = repetida
+  setStatus(id, next);
+  var n = parseInt(id.split('-')[1]);
+  var nm = stkName(packTeam, n);
+  var img = PLAYER_IMGS[id] ? '<img src="' + PLAYER_IMGS[id] + '" alt=""/>' : '<span style="font-size:26px">' + (cur === 'missing' ? '✅' : '🔄') + '</span>';
+  var msg = cur === 'missing'
+    ? img + '<div><b style="color:#4ade80">Colada! ✓</b><br><span style="font-size:11px;color:#8fa396">' + id + ' · ' + nm + '</span></div>'
+    : img + '<div><b style="color:#fb923c">Repetida! 🔄 Boa pra troca</b><br><span style="font-size:11px;color:#8fa396">' + id + ' · ' + nm + '</span></div>';
+  renderPack(msg);
+  showUndo(id, cur);
+  if (before < 20 && countTeam(packTeam) === 20)
+    _celebrate(TEAMS[packTeam].f + '<br>' + TEAMS[packTeam].n.toUpperCase() + ' COMPLETA! 🎉');
+}
+
+// ── DESFAZER ──────────────────────────────────────────
+var _undoTimer = null;
+function showUndo(id, prevStatus) {
+  var old = document.getElementById('undo-toast'); if (old) old.remove();
+  clearTimeout(_undoTimer);
+  var el = document.createElement('div');
+  el.id = 'undo-toast';
+  var stL = { missing: 'faltando', have: 'tenho ✓', rep: 'repetida 2+' };
+  el.innerHTML = '<span>' + id + ' → ' + stL[getStatus(id)] + '</span><button>DESFAZER</button>';
+  el.querySelector('button').onclick = function () {
+    setStatus(id, prevStatus);
+    el.remove();
+    _rerenderCurrent();
+  };
+  document.body.appendChild(el);
+  _undoTimer = setTimeout(function(){ el.remove(); }, 4000);
+}
+function _rerenderCurrent() {
+  var on = document.querySelector('.screen.on');
+  if (!on) return;
+  if (on.id === 's-team' && curTeam) renderStickers(curTeam);
+  if (on.id === 's-pack') renderPack();
+  if (on.id === 's-cc') renderCc();
+  if (on.id === 's-fwc') { renderFwc(); _refreshFwcHomeRow(curFwcMode); }
+  if (on.id === 's-home') renderHome();
+  if (on.id === 's-search') doSearch(document.getElementById('sinp').value);
+  if (on.id === 's-stats') renderStats();
 }
 
 // ── OFFLINE ───────────────────────────────────────────
